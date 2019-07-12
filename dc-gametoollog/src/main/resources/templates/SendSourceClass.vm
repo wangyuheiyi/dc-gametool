@@ -1,0 +1,13 @@
+package ${packageName};
+
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.stereotype.Component;
+
+@Component
+public interface SendSource {
+	String OUTPUT = "$channelName";
+	
+	@Output(SendSource.OUTPUT)
+	MessageChannel output();
+}

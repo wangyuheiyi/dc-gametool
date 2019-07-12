@@ -1,0 +1,26 @@
+package ${packageName};
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.integration.support.MessageBuilder;
+import org.springframework.stereotype.Component;
+
+import ${packageBeanName}.${father};
+
+@Component
+@EnableBinding(SendSource.class)
+public class SinkSend {
+	@Autowired
+	private SendSource mySendSource;
+	private static Logger logger=LoggerFactory.getLogger(SinkSend.class);
+	
+	public void sendinfo($father $fatherName){
+		sendinfoGroupName($fatherName,${fatherName}.getClass().getSimpleName());
+	}
+	
+	public void sendinfoGroupName($father $fatherName,String simpleName){
+		logger.info("send: ================= simpleName:"+simpleName);
+		mySendSource.output().send(MessageBuilder.withPayload($fatherName).setHeader("messageName", simpleName).build());
+	}
+}

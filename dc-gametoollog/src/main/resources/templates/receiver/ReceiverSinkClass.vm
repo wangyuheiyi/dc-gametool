@@ -1,0 +1,31 @@
+package ${packageName};
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
+
+import reactor.core.publisher.Mono;
+
+import ${basePackage}.${receiverObjName}Application;
+import ${servicePackage}.SaveInfoService;
+#foreach($logFile in $logFiles)
+import ${logFile.receiverBeanPackage}.${logFile.beanName};
+#end
+@EnableBinding(SaveInfoSource.class)
+public class SinkReceiver {
+	@Autowired
+	SaveInfoService saveInfoService;
+	
+	private static Logger logger=LoggerFactory.getLogger(${receiverObjName}Application.class);
+	
+	#foreach($logFile in $logFiles)
+	@StreamListener(value=SaveInfoSource.INPUT ,condition = "headers['messageName']=='$logFile.beanName'")
+	public void receive${logFile.beanName}($logFile.beanName payload){
+		Mono<${logFile.beanName}> res${logFile.beanName}=saveInfoService.save${logFile.beanName}(payload);
+		res${logFile.beanName}.subscribe(log->logger.info("$logFile.beanName: =========="+log.toString()),error->logger.info("$logFile.beanName: =========="+error.getMessage()));
+	}
+	#end
+	
+}

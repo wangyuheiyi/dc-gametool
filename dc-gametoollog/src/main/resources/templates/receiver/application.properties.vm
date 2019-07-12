@@ -1,0 +1,11 @@
+server.port=${receiverServerPort}
+spring.application.name=${receiverServerName}
+spring.data.mongodb.uri=${receiverDbUrl}
+spring.rabbitmq.host=${receiverRabbitmqHost}
+spring.rabbitmq.port=${receiverRabbitmqPort}
+spring.rabbitmq.username=${receiverRabbitmqUsername}
+spring.rabbitmq.password=${receiverRabbitmqPassword}
+
+spring.cloud.stream.defaultBinder=rabbit
+spring.cloud.stream.bindings.${receiverChannelName}.destination=${baseMsgChannelName}
+spring.cloud.stream.bindings.${receiverChannelName}.contentType=text/plain

@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>查询数据</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- import Vue.js -->
+	<script src="//vuejs.org/js/vue.min.js"></script>
+	<!-- import stylesheet -->
+	<link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+	
+	<!-- import iView -->
+	<script src="//unpkg.com/iview/dist/iview.min.js"></script>
+	<script src="//unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="tableInfo">
+ 	<i-table stripe :columns="columns" :data="datas"></i-table>
+</div>
+<script src="../js/tableInfo.js"></script>
+</body>
+</html>

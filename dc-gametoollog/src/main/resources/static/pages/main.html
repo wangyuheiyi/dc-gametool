@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>日志功能页面</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- import Vue.js -->
+	<script src="//vuejs.org/js/vue.min.js"></script>
+	<!-- import stylesheet -->
+	<link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+	
+	<!-- import iView -->
+	<script src="//unpkg.com/iview/dist/iview.min.js"></script>
+	<script src="//unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<style>
+   .layout{
+       border: 1px solid #d7dde4;
+       background: #f5f7f9;
+       position: relative;
+       border-radius: 4px;
+       overflow: hidden;
+   }
+   .layout-header-bar{
+       background: #fff;
+       box-shadow: 0 1px 1px rgba(0,0,0,.1);
+   }
+   .layout-logo-left{
+       width: 90%;
+       height: 30px;
+       background: #5b6270;
+       border-radius: 3px;
+       margin: 15px auto;
+   }
+   .menu-icon{
+       transition: all .3s;
+   }
+   .rotate-icon{
+       transform: rotate(-90deg);
+   }
+   .menu-item span{
+       display: inline-block;
+       overflow: hidden;
+       width: 85px;
+       text-overflow: ellipsis;
+       white-space: nowrap;
+       vertical-align: bottom;
+       transition: width .2s ease .2s;
+   }
+   .menu-item i{
+       transform: translateX(0px);
+       transition: font-size .2s ease, transform .2s ease;
+       vertical-align: middle;
+       font-size: 16px;
+   }
+   .collapsed-menu span{
+       width: 0px;
+       transition: width .2s ease;
+   }
+   .collapsed-menu i{
+       transform: translateX(5px);
+       transition: font-size .2s ease .2s, transform .2s ease .2s;
+       vertical-align: middle;
+       font-size: 22px;
+   }
+</style>
+	<div id="mainInfo" class="layout">
+	 <Layout>
+		<Sider ref="side1" hide-trigger collapsible :collapsed-width="90" v-model="isCollapsed">
+		    <i-menu active-name="logManager" theme="dark" width="auto" :class="menuitemClasses">
+		        <Menu-item name="logManager" @click.native="jumptoPath('index.html')">
+		            <Icon type="ios-navigate"></Icon>
+		            <span>日志管理</span>
+		        </Menu-item>
+		        <Submenu name="4">
+		        	<template slot="title" value="">
+		                <Icon type="ios-search"></Icon>
+		                <span>日志查看</span>
+		            </template>
+		            <div v-for="logBean in logBeans">
+			            <Menu-item :name="logBean.beanName" @click.native="searchLogInfo(logBean.beanName,logBean.id)">
+				            <Icon type="ios-search"></Icon>
+				            <span>{{logBean.beanDescribe}}</span>
+				        </Menu-item>
+		            </div>
+		        </Submenu>
+		    </i-menu>
+		</Sider>
+		 <Layout>
+                <i-header :style="{padding: 0}" class="layout-header-bar">
+                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 10px'}" type="md-menu" size="24"></Icon>
+                </i-header>
+                <i-content :style="{background: '#fff', minHeight: '900px'}">
+                   <iframe name = "contentInfo" id = "contentInfo" v-bind:src="reportUrl"
+				   width="100%" height="90%" frameborder="0" scrolling="yes">
+				   </iframe>
+                </i-content>
+        </Layout>
+    </Layout>
+	</div>
+<script src="../js/main.js"></script>
+</body>
+</html>

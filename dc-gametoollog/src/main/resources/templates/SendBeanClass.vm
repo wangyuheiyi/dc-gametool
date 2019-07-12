@@ -1,0 +1,33 @@
+package ${packageBeanName};
+
+/**
+*
+* $beanDescribe
+*
+*/
+#if(!$father)
+	public class $className {
+#else
+	public class $className extends $father {
+#end
+
+
+#foreach($field in $fields)
+	/** $field.comment */
+	private $field.fieldType $field.fieldName;
+#end
+
+#foreach($field in $fields)
+#if($field.fieldType == 'boolean')
+	public $field.fieldType is${field.bigName}() {
+#else
+	public $field.fieldType get${field.bigName}() {
+#end
+		return this.$field.fieldName;
+	}
+
+	public void set${field.bigName}($field.fieldType $field.fieldName) {
+		this.$field.fieldName = $field.fieldName;
+	}
+#end
+}

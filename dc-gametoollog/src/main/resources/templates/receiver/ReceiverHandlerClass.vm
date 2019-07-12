@@ -1,0 +1,28 @@
+package ${packageName};
+
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
+
+import reactor.core.publisher.Mono;
+
+import ${servicePackage}.SaveInfoService;
+#foreach($logFile in $logFiles)
+import ${logFile.receiverBeanPackage}.${logFile.beanName};
+#end
+@Component
+public class LogInfoHandler {
+	@Autowired
+	SaveInfoService saveInfoService;
+	
+	#foreach($logFile in $logFiles)
+	public Mono<ServerResponse> get${logFile.beanName}Info(ServerRequest serverRequest) {
+		return ok().contentType(MediaType.APPLICATION_JSON).body(saveInfoService.getAll${logFile.beanName}(),${logFile.beanName}.class);
+	}
+	#end
+	
+}

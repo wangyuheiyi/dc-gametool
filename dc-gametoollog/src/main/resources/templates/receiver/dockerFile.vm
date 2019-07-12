@@ -1,0 +1,4 @@
+FROM wangyuheiyi/myalpine-java8:latest
+ADD ${receiverCodeArtifactId}-${receiverCodeVersion}.jar /${receiverCodeArtifactId}.jar
+EXPOSE $receiverServerPort
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/${receiverCodeArtifactId}.jar"]

@@ -1,0 +1,38 @@
+package ${receiverBeanPackage};
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+#if(!$father)
+import org.springframework.data.annotation.Id;
+#else
+import org.springframework.data.mongodb.core.mapping.Document;
+#end
+
+/**
+*
+* $beanDescribe
+*
+*/
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+#if(!$father)
+public class $className {
+#else
+@Document
+@EqualsAndHashCode(callSuper=true)
+public class $className extends $father {
+#end
+
+#if(!$father)
+	@Id
+    private String id;
+#end
+
+#foreach($field in $fields)
+	/** $field.comment */
+	private $field.fieldType $field.fieldName;
+#end
+}

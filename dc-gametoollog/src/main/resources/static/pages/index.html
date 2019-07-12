@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>日志管理页面</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <!-- import Vue.js -->
+	<script src="//vuejs.org/js/vue.min.js"></script>
+	<!-- import stylesheet -->
+	<link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css">
+	<link rel="stylesheet" href="./css/main.css">
+	<!-- import iView -->
+	<script src="//unpkg.com/iview/dist/iview.min.js"></script>
+	<script src="//unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+	<div id="managerInfo">
+		<div style="padding: 5px;background: #f8f8f9">
+	 	<transition name="fade">
+	     	<i-button type="info" @click="creatNew" v-if="isCreat">添加数据</i-button>
+		    <div v-else>
+		      <Card title="日志信息" icon="ios-options" :padding="0" shadow style="width: 100%;">
+		      	<div style="padding:10px;">
+			      	<Row Row type="flex" justify="start" align="middle" class="code-row-bg">
+			      		<i-col span="2">数据id:</i-col>
+			      		<i-col span="6">{{dataInfo.id}}</i-col>
+       					<i-col span="2">数据库自动生成id</i-col>
+       					<i-col span="14"></i-col>
+			      	</Row>
+			      	<Row class="code-row-bg">
+			      		<i-col span="2">游戏码:</i-col>
+			      		<i-col span="6">{{dataInfo.gamecode}}</i-col>
+			      		<i-col span="1"></i-col>
+       					<i-col span="15">游戏代码</i-col>
+			      	</Row>
+			      	<Row class="code-row-bg">
+			      		<i-col span="2">游戏名称:</i-col>
+			      		<i-col span="22">{{dataInfo.gamename}}</i-col>
+			      	</Row>
+			      	<Row type="flex" class="code-row-bg" align="middle">
+			      		<i-col span="2">日志服务名称：</i-col>
+			      		<i-col span="6"><i-input  placeholder="日志服务名称" v-model="dataInfo.logservicename" clearable></i-input></i-col>
+       					<i-col span="16"></i-col>
+			      	</Row>
+			      	<Row type="flex" class="code-row-bg" align="middle">
+			      		<i-col span="2">日志服务默认基类名称：</i-col>
+			      		<i-col span="6"><i-input  placeholder="默认基类名称" v-model="dataInfo.baseLogClassName" clearable></i-input></i-col>
+       					<i-col span="16"></i-col>
+			      	</Row>
+			      	<Row type="flex" class="code-row-bg" align="middle">
+			      		<i-col span="2">消息接收的公共信道：</i-col>
+			      		<i-col span="6"><i-input  placeholder="消息接收的公共信道" v-model="dataInfo.baseMsgChannelName" clearable></i-input></i-col>
+       					<i-col span="16"></i-col>
+			      	</Row>
+			      	<Divider orientation="left">发送接收信息</Divider>
+			      	<Tabs type="card">
+		      			<tab-pane label="发送服务信息">
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">发送服务项目名称：</i-col>
+					      		<i-col span="6"><i-input  placeholder="发送服务项目名称" v-model="dataInfo.sendObjName" clearable></i-input></i-col>
+					      		<i-col span="2">发送服根命名空间：</i-col>
+					      		<i-col span="6"><i-input  placeholder="发送服根命名空间：" v-model="dataInfo.sendBasePackage" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">执行的命令文件：</i-col>
+					      		<i-col span="6"><i-input  placeholder="mvncom.bat or mvncom.sh" v-model="dataInfo.mvnCom" clearable></i-input></i-col>
+					      		<i-col span="2">代码版本：</i-col>
+					      		<i-col span="6"><i-input  placeholder="0.0.1-RELEASE" v-model="dataInfo.codeVersion" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">代码GroupId：</i-col>
+					      		<i-col span="6"><i-input  placeholder="com.dc" v-model="dataInfo.codeGroupId" clearable></i-input></i-col>
+					      		<i-col span="2">代码ArtifactId：</i-col>
+					      		<i-col span="6"><i-input  placeholder="autosendrmq" v-model="dataInfo.codeArtifactId" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">release版本上传路径：</i-col>
+					      		<i-col span="6"><i-input  placeholder="http://111.230.26.190:8081/repository/maven-releases/" v-model="dataInfo.releaseMavenPath" clearable></i-input></i-col>
+					      		<i-col span="2">snapshot版本上传路径：</i-col>
+					      		<i-col span="6"><i-input  placeholder="http://111.230.26.190:8081/repository/maven-snapshots/" v-model="dataInfo.snapshotMavenPath" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle">
+					      		<i-col span="2">mavenId：</i-col>
+					      		<i-col span="6"><i-input  placeholder="与maven配置中的一致" v-model="dataInfo.mavenId" clearable></i-input></i-col>
+		       					<i-col span="2">日志消息流的通道名：</i-col>
+					      		<i-col span="6"><i-input  placeholder="日志消息流的通道名：" v-model="dataInfo.channelName" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle">
+					      		<i-col span="24"><i-button type="info" @click="creatSendFile" v-if="isCreatLog">生成发送文件</i-button><Divider type="vertical"></Divider>
+		      					<i-button type="info" @click="runMvnCom" :loading="mvnLoading" v-if="isCanRun">
+		      						<span v-if="!mvnLoading">执行文件</span>
+		       						<span v-else>Loading...</span>
+		      					</i-button></i-col>
+					      	</Row>
+				     	</tab-pane>
+				     	<tab-pane label="接收服务信息">
+					     	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">接收服务项目名称：</i-col>
+					      		<i-col span="6"><i-input  placeholder="接收服务项目名称" v-model="dataInfo.receiverObjName" clearable></i-input></i-col>
+					      		<i-col span="2">接收根命名空间：</i-col>
+					      		<i-col span="6"><i-input  placeholder="接收根命名空间" v-model="dataInfo.receiverBasePackage" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">接收服日志消息流的通道名：</i-col>
+					      		<i-col span="6"><i-input  placeholder="接收服日志消息流的通道名" v-model="dataInfo.receiverChannelName" clearable></i-input></i-col>
+					      		<i-col span="2">接收服执行的命令文件：</i-col>
+					      		<i-col span="6"><i-input  placeholder="接收服执行的命令文件" v-model="dataInfo.receiverMvnCom" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">服务名称：</i-col>
+					      		<i-col span="6"><i-input  placeholder="服务名称" v-model="dataInfo.receiverServerName" clearable></i-input></i-col>
+					      		<i-col span="2">服务端口：</i-col>
+					      		<i-col span="6"><i-input  placeholder="服务端口" v-model="dataInfo.receiverServerPort" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">代码版本：</i-col>
+					      		<i-col span="6"><i-input  placeholder="代码版本" v-model="dataInfo.receiverCodeVersion" clearable></i-input></i-col>
+					      		<i-col span="2">代码GroupId：</i-col>
+					      		<i-col span="6"><i-input  placeholder="代码GroupId" v-model="dataInfo.receiverCodeGroupId" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">代码ArtifactId：</i-col>
+					      		<i-col span="6"><i-input  placeholder="代码版本" v-model="dataInfo.receiverCodeArtifactId" clearable></i-input></i-col>
+					      		<i-col span="2">receiverDbUrl：</i-col>
+					      		<i-col span="6"><i-input  placeholder="mongodb://username:password@host:port/dbname" v-model="dataInfo.receiverDbUrl" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">Rabbit地址：</i-col>
+					      		<i-col span="6"><i-input  placeholder="Rabbit地址" v-model="dataInfo.receiverRabbitmqHost" clearable></i-input></i-col>
+					      		<i-col span="2">Rabbit端口：</i-col>
+					      		<i-col span="6"><i-input  placeholder="Rabbit端口" v-model="dataInfo.receiverRabbitmqPort" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">Rabbit用户名：</i-col>
+					      		<i-col span="6"><i-input  placeholder="Rabbit用户名" v-model="dataInfo.receiverRabbitmqUsername" clearable></i-input></i-col>
+					      		<i-col span="2">Rabbit密码：</i-col>
+					      		<i-col span="6"><i-input  placeholder="Rabbit密码" v-model="dataInfo.receiverRabbitmqPassword" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle" :gutter="15">
+					      		<i-col span="2">docker地址：</i-col>
+					      		<i-col span="6"><i-input  placeholder="docker地址" v-model="dataInfo.receiverDockerHost" clearable></i-input></i-col>
+					      		<i-col span="2">服务查询地址：</i-col>
+					      		<i-col span="6"><i-input  placeholder="服务查询地址" v-model="dataInfo.receiverSearchHost" clearable></i-input></i-col>
+		       					<i-col span="8"></i-col>
+					      	</Row>
+					      	<Row type="flex" class="code-row-bg" align="middle">
+					      		<i-col span="24"><i-button type="info" @click="creatReceiverFile" v-if="isCreatLog">生成接收文件</i-button><Divider type="vertical"></Divider>
+		      					<i-button type="info" @click="runReceiverMvnCom" :loading="mvnLoading" v-if="isReceiverCanRun">
+		      						<span v-if="!mvnLoading">编译接收项目文件</span>
+		       						<span v-else>Loading...</span>
+		      					</i-button></i-col>
+					      	</Row>
+					    </tab-pane>
+				    </Tabs>
+		      	</div>
+		      	<div style="padding:20px;">
+		      		<i-button  type="info" @click="saveInfo" >保存</i-button><Divider type="vertical"></Divider><i-button type="error" @click="deleteLogManager">删除</i-button>
+		      	</div>
+		      	<Divider></Divider>
+		      </Card>
+		      <Card title="日志文件" icon="md-list" :padding="0" shadow style="width: 100%;">
+		      	 <div style="padding:20px;">
+		      	 	<i-button type="info" @click="addlogBean">添加日志实体类</i-button>
+		      	 </div>
+		      	 <div style="padding:20px;">
+		      	 	<Collapse v-model="panelvalue" accordion v-for="logBean in logBeans" @on-change="collapseChange">
+		      	 		<Row type="flex" justify="start" align="middle" :gutter="16">
+					      		<i-col span="1">实体名:</i-col>
+					      		<i-col span="3">
+					      			<div v-if="logBean.isBaseBean==='1'">
+					      				<i-input  placeholder="" v-model="logBean.beanName" disabled></i-input>
+					      			</div>
+					      			<div v-else>
+					      				<i-input  placeholder="" v-model="logBean.beanName" clearable></i-input>
+					      			</div>
+					      		</i-col>
+		       					<i-col span="1">描述:</i-col>
+		       					<i-col span="3">
+		       						<div v-if="logBean.isBaseBean==='1'">
+					      				<i-input  placeholder="" v-model="logBean.beanDescribe" disabled></i-input>
+					      			</div>
+					      			<div v-else>
+					      				<i-input  placeholder="" v-model="logBean.beanDescribe" clearable></i-input>
+					      			</div>
+		       					</i-col>
+		       					<i-col span="1">基类名:</i-col>
+		       					<i-col span="3">
+		       						<div v-if="logBean.isBaseBean==='1'">
+					      				<i-input  placeholder="" v-model="logBean.fatherBeanName" disabled></i-input>
+					      			</div>
+					      			<div v-else>
+					      				<i-input  placeholder="" v-model="logBean.fatherBeanName" clearable></i-input>
+					      			</div>
+		       					</i-col>
+		       					<!--<i-col span="1">是否基类:</i-col>
+		       					  <i-col span="2">
+		       						<Radio-group v-model="logBean.isBaseBean">
+									    <Radio label="0">否</Radio>
+									    <Radio label="1">是</Radio>
+									</Radio-group>
+								</i-col>-->
+		       					<i-col span="1">操作:</i-col>
+		       					<i-col span="3"><i-button type="success" @click="saveLogBean(logBean)">保存</i-button><Divider type="vertical"></Divider><i-button type="error" @click="deleteLogBean(logBean)">删除</i-button></i-col>
+					    </Row>
+					    <Panel :name="logBean.beanName">
+					    	{{logBean.beanName}}<Divider type="vertical"></Divider> 实体id:{{logBean.id}}
+					    	<p slot="content">
+					    		<i-button type="info" @click="addlogField(logBean.id)">添加实体字段</i-button>
+					    		<Divider orientation="left">字段内容</Divider>
+								<span v-for="logField in logFields">
+									<Divider orientation="left">fieldid:{{logField.id}}</Divider>
+									<Row type="flex" justify="start" align="middle" :gutter="15" >
+				      					<i-col span="1">类型:</i-col>
+				      					<i-col span="2"><i-input  placeholder="" v-model="logField.fieldType" clearable></i-input></i-col>
+				      					<i-col span="1">名称:</i-col>
+				      					<i-col span="2"><i-input  placeholder="" v-model="logField.fieldName" clearable></i-input></i-col>
+				      					<i-col span="1">大写名:</i-col>
+				      					<i-col span="2"><i-input  placeholder="" v-model="logField.bigName" clearable></i-input></i-col>
+				      					<i-col span="1">注释:</i-col>
+				      					<i-col span="2"><i-input  placeholder="" v-model="logField.comment" clearable></i-input></i-col>
+				      					<i-col span="1">操作:</i-col>
+				      					<i-col span="3"><i-button type="success" @click="saveLogField(logField)">保存</i-button><Divider type="vertical"></Divider><i-button type="error" @click="deleteLogField(logField)">删除</i-button></i-col>
+									</Row>
+									<br>
+								</span>
+					    	</p>
+					    </Panel>
+				   </Collapse>
+		      	 </div>
+		      </Card>
+		    </div>
+	     </transition>
+     	</div>
+	</div>
+	<!-- js加载要写在html对象加载之后 -->
+	<script src="../js/index.js"></script>
+</body>
+</html>

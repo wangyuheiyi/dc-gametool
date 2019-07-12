@@ -1,0 +1,8 @@
+package ${packageName};
+
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import ${beanPackage}.${beanName};
+
+public interface ${beanName}Repository extends ReactiveMongoRepository<${beanName}, String>{
+
+}
