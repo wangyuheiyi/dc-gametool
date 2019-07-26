@@ -20,10 +20,10 @@ public class DcRedistoolApplicationTests {
 	private RedisUtil redisUtil;
 	@Test
 	public void contextLoads() {
-		Mono<Boolean> mono2 = reactiveRedisTemplate.opsForValue().set("test3", "wangyu1");
-		mono2.subscribe(s-> System.out.println(String.valueOf(s)+"========================="));
-//		Mono mono1 = reactiveRedisTemplate.opsForValue().get("test2");
-//        mono1.subscribe(s-> System.out.println(String.valueOf(s)+"========================="));
+//		Mono<Boolean> mono2 = reactiveRedisTemplate.opsForValue().set("test3", "wangyu1");
+//		mono2.subscribe(s-> System.out.println(String.valueOf(s)+"========================="));
+		Mono mono1 = reactiveRedisTemplate.opsForValue().get("test3");
+        mono1.subscribe(s-> System.out.println(String.valueOf(s)+"========================="));
 		
 //		redisUtil.set("name3", "wangyu3");
 //		System.out.println("name3:  " + redisUtil.get("name3"));
