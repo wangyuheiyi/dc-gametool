@@ -1,14 +1,19 @@
 package com.dc.redistool.unreactiveutil;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import com.dc.redistool.DcRedistoolApplication;
 /**
  * Redis工具类
  * 
@@ -17,6 +22,7 @@ import org.springframework.util.CollectionUtils;
  */
 @Component
 public class RedisUtil {
+	private static Logger logger=LoggerFactory.getLogger(DcRedistoolApplication.class);
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 	
@@ -36,7 +42,7 @@ public class RedisUtil {
 			}
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("set timeout error fun={0}","expire"),e);
 			return false;
 		}
 	}
@@ -63,7 +69,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.hasKey(key);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("hasKey error fun={0}","hasKey"),e);
 			return false;
 		}
 	}
@@ -112,7 +118,7 @@ public class RedisUtil {
 			redisTemplate.opsForValue().set(key, value);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis set value is error fun={0}","set"),e);
 			return false;
 		}
 	}
@@ -136,7 +142,7 @@ public class RedisUtil {
 			}
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis set value is error fun={0}","set tiemout"),e);
 			return false;
 		}
 	}
@@ -151,9 +157,7 @@ public class RedisUtil {
 	 * 
 	 */
 	public long incr(String key, long delta) {
-		if (delta < 0) {
-			throw new RuntimeException("递增因子必须大于0");
-		}
+		if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 		return redisTemplate.opsForValue().increment(key, delta);
 	}
 
@@ -208,12 +212,12 @@ public class RedisUtil {
 	 * @return true 成功 false 失败
 	 * 
 	 */
-	public boolean hmset(String key, Map<String, Object> map) {
+	public boolean hmset(String key, Map<Object, Object> map) {
 		try {
 			redisTemplate.opsForHash().putAll(key, map);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis hmset value is error fun={0}","hmset"),e);
 			return false;
 		}
 	}
@@ -228,7 +232,7 @@ public class RedisUtil {
 	 * @return true成功 false失败
 	 * 
 	 */
-	public boolean hmset(String key, Map<String, Object> map, long time) {
+	public boolean hmset(String key, Map<Object, Object> map, long time) {
 		try {
 			redisTemplate.opsForHash().putAll(key, map);
 			if (time > 0) {
@@ -236,7 +240,7 @@ public class RedisUtil {
 			}
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis hmset value is error fun={0}","hmset timeout"),e);
 			return false;
 		}
 	}
@@ -256,7 +260,7 @@ public class RedisUtil {
 			redisTemplate.opsForHash().put(key, item, value);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis hset value is error fun={0}","hset"),e);
 			return false;
 		}
 	}
@@ -280,7 +284,7 @@ public class RedisUtil {
 			}
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis hset value is error fun={0}","hset timeout"),e);
 			return false;
 		}
 	}
@@ -351,7 +355,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForSet().members(key);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis sGet value is error fun={0}","sGet"),e);
 			return null;
 		}
 	}
@@ -369,7 +373,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForSet().isMember(key, value);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis sHasKey value is error fun={0}","sHasKey"),e);
 			return false;
 		}
 	}
@@ -387,7 +391,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForSet().add(key, values);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis sSet value is error fun={0}","sSet"),e);
 			return 0;
 		}
 	}
@@ -409,7 +413,7 @@ public class RedisUtil {
 				expire(key, time);
 			return count;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis sSetAndTime value is error fun={0}","sSetAndTime"),e);
 			return 0;
 		}
 	}
@@ -426,7 +430,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForSet().size(key);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis sGetSetSize value is error fun={0}","sGetSetSize"),e);
 			return 0;
 		}
 	}
@@ -445,7 +449,7 @@ public class RedisUtil {
 			Long count = redisTemplate.opsForSet().remove(key, values);
 			return count;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis setRemove value is error fun={0}","setRemove"),e);
 			return 0;
 		}
 	}
@@ -465,7 +469,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForList().range(key, start, end);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lGet value is error fun={0}","lGet"),e);
 			return null;
 		}
 	}
@@ -482,7 +486,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForList().size(key);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lGetListSize value is error fun={0}","lGetListSize"),e);
 			return 0;
 		}
 	}
@@ -500,7 +504,7 @@ public class RedisUtil {
 		try {
 			return redisTemplate.opsForList().index(key, index);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lGetIndex value is error fun={0}","lGetIndex"),e);
 			return null;
 		}
 	}
@@ -520,7 +524,7 @@ public class RedisUtil {
 			redisTemplate.opsForList().rightPush(key, value);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lSet value is error fun={0}","lSet"),e);
 			return false;
 		}
 	}
@@ -542,7 +546,7 @@ public class RedisUtil {
 				expire(key, time);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lSet value is error fun={0}","lSet timeout"),e);
 			return false;
 		}
 	}
@@ -562,7 +566,7 @@ public class RedisUtil {
 			redisTemplate.opsForList().rightPushAll(key, value);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lSet value is error fun={0}","lSet"),e);
 			return false;
 		}
 	}
@@ -584,7 +588,7 @@ public class RedisUtil {
 				expire(key, time);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lSet value is error fun={0}","lSet timeout"),e);
 			return false;
 		}
 	}
@@ -604,7 +608,7 @@ public class RedisUtil {
 			redisTemplate.opsForList().set(key, index, value);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lUpdateIndex value is error fun={0}","lUpdateIndex"),e);
 			return false;
 		}
 	}
@@ -624,7 +628,7 @@ public class RedisUtil {
 			Long remove = redisTemplate.opsForList().remove(key, count, value);
 			return remove;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageFormat.format("redis lRemove value is error fun={0}","lRemove"),e);
 			return 0;
 		}
 	}
