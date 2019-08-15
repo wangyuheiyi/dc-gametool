@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
+import javax.validation.Payload;
 /**
  * @Target指明这个注解要作用在什么地方，可以是对象、域、构造器等，因为要作用在age域上，因此这里选择FIELD
  * @Retention指明了注解的生命周期，可以有SOURCE（仅保存在源码中，会被编译器丢弃），CLASS（在class文件中可用，会被VM丢弃）以及RUNTIME（在运行期也被保留），这里选择了生命周期最长的RUNTIME
@@ -20,5 +21,10 @@ import javax.validation.Constraint;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = KeyValidatorClass.class)
 public @interface KeyValidator {
-
+	String message() default "key must not be null";
+	
+	//groups 和 payload 这两个parameter 必须包含
+	Class<?>[] groups() default {};
+	
+	Class<? extends Payload>[] payload() default {};
 }

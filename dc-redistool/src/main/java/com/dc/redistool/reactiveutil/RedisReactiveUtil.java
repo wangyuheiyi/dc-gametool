@@ -4,21 +4,18 @@ import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import com.dc.redistool.DcRedistoolApplication;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import com.dc.redistool.DcRedistoolApplication;
+import com.dc.redistool.validator.KeyValidator;
 
 /**
  * 响应式redis工具操作类
@@ -40,7 +37,7 @@ public class RedisReactiveUtil {
 		 * @param time 时间(秒)
 		 * @return
 		 */
-		public Mono<Boolean> expire(String key, long timeout) {
+		public Mono<Boolean> expire(@KeyValidator String key, long timeout) {
 			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				if (timeout > 0) {
