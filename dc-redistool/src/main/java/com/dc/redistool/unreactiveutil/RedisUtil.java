@@ -134,6 +134,7 @@ public class RedisUtil {
 	 * 
 	 */
 	public boolean set(String key, Object value, long time) {
+		if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 		try {
 			if (time > 0) {
 				redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
