@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.dc</groupId>
 	<artifactId>dc-redistool</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-RELEASE</version>
 	<name>dc-redistool</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -37,12 +37,45 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<distributionManagement>
+		<repository>
+			<id>mymaven</id> 
+	  		<url>http://111.230.94.160:8081/repository/maven-releases/</url>
+		</repository>
+	  	<snapshotRepository>
+	  		<id>mymaven</id> 
+	  		<url>http://111.230.94.160:8081/repository/maven-snapshots/</url>
+	  	</snapshotRepository>
+  	</distributionManagement>
+  	
+  	
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<useUniqueVersions>false</useUniqueVersions>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				 <groupId>org.apache.maven.plugins</groupId>
+				 <artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<useUniqueVersions>false</useUniqueVersions> 
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
