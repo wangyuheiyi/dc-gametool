@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 
 import com.dc.redistool.DcRedistoolApplication;
+import com.dc.redistool.validator.KeyValidator;
 /**
  * Redis工具类
  * 
@@ -21,6 +23,7 @@ import com.dc.redistool.DcRedistoolApplication;
  * @date 2019年2月25日
  */
 @Component
+@Validated
 public class RedisUtil {
 	private static Logger logger=LoggerFactory.getLogger(DcRedistoolApplication.class);
 	@Autowired
@@ -100,7 +103,7 @@ public class RedisUtil {
 	 * @return 值
 	 * 
 	 */
-	public Object get(String key) {
+	public Object get(@KeyValidator String key) {
 		return key == null ? null : redisTemplate.opsForValue().get(key);
 	}
 

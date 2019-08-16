@@ -6,6 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import javax.validation.Payload;
 /**
  * @Target指明这个注解要作用在什么地方，可以是对象、域、构造器等，因为要作用在age域上，因此这里选择FIELD
  * @Retention指明了注解的生命周期，可以有SOURCE（仅保存在源码中，会被编译器丢弃），CLASS（在class文件中可用，会被VM丢弃）以及RUNTIME（在运行期也被保留），这里选择了生命周期最长的RUNTIME
@@ -17,7 +20,24 @@ import javax.validation.Constraint;
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = KeyValidatorClass.class)
+@Constraint(validatedBy = KeyValidator.KeyValidatorClass.class)
 public @interface KeyValidator {
-
+    boolean required() default true;
+    
+	String message() default "key must not be null or isEmpty";
+	Class<?>[] groups() default {};
+	
+	Class<? extends Payload>[] payload() default {};
+	
+	class KeyValidatorClass implements ConstraintValidator<KeyValidator,String>{
+	    @Override
+	    public void initialize(KeyValidator constraintAnnotation) {
+	    }
+	    
+		@Override
+		public boolean isValid(String arg0, ConstraintValidatorContext arg1) {
+			if(arg0==null||arg0.isEmpty()) return false;
+			return true;	
+		}
+	}
 }
