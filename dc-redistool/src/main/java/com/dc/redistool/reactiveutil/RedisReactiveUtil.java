@@ -15,7 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import com.dc.redistool.DcRedistoolApplication;
-import com.dc.redistool.validator.KeyValidator;
 
 /**
  * 响应式redis工具操作类
@@ -37,8 +36,7 @@ public class RedisReactiveUtil {
 		 * @param time 时间(秒)
 		 * @return
 		 */
-		public Mono<Boolean> expire(@KeyValidator String key, long timeout) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
+		public Mono<Boolean> expire(String key, long timeout) {
 			try {
 				if (timeout > 0) {
 					return reactiveRedisTemplate.expire(key, Duration.of(timeout, ChronoUnit.MILLIS));
@@ -58,7 +56,6 @@ public class RedisReactiveUtil {
 		 * @return 时间(秒) 返回0代表为永久有效
 		 */
 		public Mono<Duration> getExpire(String key) {
-			if(key==null) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.getExpire(key);
 		}
 		
@@ -70,7 +67,6 @@ public class RedisReactiveUtil {
 		 * @return true 存在 false不存在
 		 */
 		public Mono<Boolean> hasKey(String key) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				return reactiveRedisTemplate.hasKey(key);
 			} catch (Exception e) {
@@ -86,7 +82,6 @@ public class RedisReactiveUtil {
 		 * @param key 可以传一个值 或多个
 		 */
 		public Mono<Long> del(String... keys) {
-			if(keys==null) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.delete(keys);
 		}
 		
@@ -100,7 +95,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Object get(String key) {
-			if(key==null||key.isEmpty()) return Mono.empty();
 			return reactiveRedisTemplate.opsForValue().get(key);
 		}
 		
@@ -114,7 +108,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> set(String key, Object value) {
-			if(key==null||key.isEmpty()) return Mono.just(false);
 			try {
 				return reactiveRedisTemplate.opsForValue().set(key, value);
 			} catch (Exception e) {
@@ -156,7 +149,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Long> incr(String key, long delta) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForValue().increment(key, delta);
 		}
 		
@@ -170,7 +162,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Double> incr(String key, double delta) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForValue().increment(key, delta);
 		}
 		
@@ -184,7 +175,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Long> decr(String key, long delta) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForValue().increment(key, -delta);
 		}
 		
@@ -198,7 +188,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Double> decr(String key, double delta) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForValue().increment(key, -delta);
 		}
 		
@@ -213,7 +202,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Object> hget(String key,Object hashKey) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().get(key, hashKey);
 		}
 		
@@ -226,7 +214,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Flux<Map.Entry<Object, Object>> hmget(String key) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().entries(key);
 		}
 		
@@ -242,7 +229,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> hmset(String key, Map<Object, Object> map) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				return reactiveRedisTemplate.opsForHash().putAll(key, map);
 			} catch (Exception e) {
@@ -261,7 +247,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> hmset(String key, Map<Object, Object> map,long timeout) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				if(timeout>0)
 					expire(key,timeout);
@@ -283,7 +268,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> hset(String key, Object hashKey, Object value) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				return reactiveRedisTemplate.opsForHash().put(key, hashKey, value);
 			} catch (Exception e) {
@@ -304,7 +288,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> hset(String key, Object hashKey, Object value, long timeout) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				if(timeout>0)
 					expire(key,timeout);
@@ -324,7 +307,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> hdel(String key) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().delete(key);
 		}
 		
@@ -338,7 +320,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> hHasKey(String key, Object hashKey) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().hasKey(key, hashKey);
 		}
 		
@@ -353,7 +334,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Double> hincr(String key,Object hashKey, double delta) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().increment(key, hashKey, delta);
 		}
 		
@@ -368,7 +348,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Long> hincr(String key,Object hashKey, long delta) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().increment(key, hashKey, delta);
 		}
 		
@@ -383,7 +362,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Double> hdecr(String key, Object hashKey, double delta) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().increment(key, hashKey, -delta);
 		}
 		
@@ -398,7 +376,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Long> hdecr(String key, Object hashKey, long delta) {
-			if(hashKey==null||key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			return reactiveRedisTemplate.opsForHash().increment(key, hashKey, -delta);
 		}
 		
@@ -412,7 +389,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Flux<Object> sGet(String key) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				return reactiveRedisTemplate.opsForSet().members(key);
 			} catch (Exception e) {
@@ -431,7 +407,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Boolean> sHasKey(String key, Object value) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				return reactiveRedisTemplate.opsForSet().isMember(key, value);
 			} catch (Exception e) {
@@ -450,7 +425,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Long> sSet(String key, Object... values) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				return reactiveRedisTemplate.opsForSet().add(key, values);
 			} catch (Exception e) {
@@ -470,7 +444,6 @@ public class RedisReactiveUtil {
 		 * 
 		 */
 		public Mono<Long> sSetAndTime(String key, long time, Object... values) {
-			if(key==null||key.isEmpty()) throw new RuntimeException("key must not be null");
 			try {
 				Mono<Long> count = reactiveRedisTemplate.opsForSet().add(key, values);
 				if (time > 0)
