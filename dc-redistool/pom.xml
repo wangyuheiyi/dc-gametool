@@ -59,6 +59,7 @@
 				<configuration>
 					<appendAssemblyId>false</appendAssemblyId>
 					<useUniqueVersions>false</useUniqueVersions>
+					<skipTests>true</skipTests>
 				</configuration>
 				<executions>
 					<execution>
@@ -73,6 +74,7 @@
 				 <groupId>org.apache.maven.plugins</groupId>
 				 <artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
+					<skipTests>true</skipTests>
 					<appendAssemblyId>false</appendAssemblyId>
 					<useUniqueVersions>false</useUniqueVersions> 
 				</configuration>
